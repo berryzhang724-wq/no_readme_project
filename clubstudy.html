@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berrry · 个人主页</title>
+<style>
+  :root {
+    --bg: #08080f;
+    --bg-soft: #10101c;
+    --card: #141422;
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #e6e6f0;
+    --text-dim: #9a9ab0;
+    --cyan: #22d3ee;
+    --purple: #a855f7;
+    --glow: rgba(34, 211, 238, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "SF Pro Display", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 420px; height: 420px; background: rgba(34,211,238,0.18); top: -120px; left: -100px; }
+  .orb-2 { width: 380px; height: 380px; background: rgba(168,85,247,0.18); bottom: -120px; right: -80px; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 6vw;
+    background: rgba(8, 8, 15, 0.7);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 15px;
+    transition: color .25s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  section { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 90px 6vw; }
+
+  .hero {
+    min-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .hero .badge {
+    display: inline-block;
+    font-size: 13px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.06);
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    max-width: 560px;
+    color: var(--text-dim);
+    font-size: 18px;
+    margin-top: 22px;
+  }
+  .hero .cta { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    color: #08080f;
+    font-weight: 600;
+    box-shadow: 0 8px 30px var(--glow);
+  }
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .sec-title {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .sec-sub { color: var(--text-dim); margin-bottom: 48px; font-size: 16px; }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .skill-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(34,211,238,0.4);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+  .skill-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .skill-name { font-weight: 600; font-size: 17px; }
+  .skill-pct { color: var(--cyan); font-size: 14px; font-family: "SF Mono", monospace; }
+  .bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+  .bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    width: 0;
+    transition: width 1.2s cubic-bezier(.25,.6,.3,1);
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .tag {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text-dim);
+  }
+
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .project-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(168,85,247,0.45);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+  }
+  .project-cover {
+    height: 150px;
+    background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(168,85,247,0.25));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+  }
+  .project-body { padding: 24px; }
+  .project-body h3 { font-size: 20px; margin-bottom: 10px; }
+  .project-body p { color: var(--text-dim); font-size: 15px; margin-bottom: 18px; }
+  .project-links { display: flex; gap: 16px; }
+  .project-links a { color: var(--cyan); text-decoration: none; font-size: 14px; }
+
+  .contact-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px;
+    text-align: center;
+  }
+  .contact-list { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-top: 28px; }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color .25s, color .25s;
+  }
+  .contact-item:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 6vw;
+    color: var(--text-dim);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s, transform .7s; }
+  .reveal.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <nav>
+    <div class="logo">Berrry</div>
+    <div class="nav-links">
+      <a href="#skills">技能</a>
+      <a href="#projects">项目</a>
+      <a href="#contact">联系</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <span class="badge">// HELLO, WORLD</span>
+    <h1>你好，我是 <span class="grad">Berrry</span></h1>
+    <p>热爱技术与创造。专注于构建优雅、高效的软件与体验，持续探索设计与工程的交汇点。</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#projects">查看项目</a>
+      <a class="btn btn-ghost" href="#contact">联系我</a>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2 class="sec-title">技能</h2>
+    <p class="sec-sub">我擅长并持续精进的技术栈。</p>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-head"><span class="skill-name">前端开发</span><span class="skill-pct">90%</span></div>
+        <div class="bar"><div class="bar-fill" data-width="90%"></div></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-head"><span class="skill-name">后端开发</span><span class="skill-pct">80%</span></div>
+        <div class="bar"><div class="bar-fill" data-width="80%"></div></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-head"><span class="skill-name">数据库 / 架构</span><span class="skill-pct">75%</span></div>
+        <div class="bar"><div class="bar-fill" data-width="75%"></div></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-head"><span class="skill-name">UI / 视觉设计</span><span class="skill-pct">70%</span></div>
+        <div class="bar"><div class="bar-fill" data-width="70%"></div></div>
+      </div>
+    </div>
+    <div class="tags reveal">
+      <span class="tag">JavaScript</span>
+      <span class="tag">TypeScript</span>
+      <span class="tag">React</span>
+      <span class="tag">Vue</span>
+      <span class="tag">Node.js</span>
+      <span class="tag">Python</span>
+      <span class="tag">SQL</span>
+      <span class="tag">Git</span>
+      <span class="tag">Docker</span>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2 class="sec-title">项目作品</h2>
+    <p class="sec-sub">一些我参与或独立完成的项目。</p>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-cover">🛠️</div>
+        <div class="project-body">
+          <h3>项目名称一</h3>
+          <p>在这里简要描述项目的功能、技术栈与亮点，让访客快速了解它的价值。</p>
+          <div class="project-links"><a href="#">演示</a><a href="#">源码</a></div>
+        </div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-cover">📦</div>
+        <div class="project-body">
+          <h3>项目名称二</h3>
+          <p>在这里简要描述项目的功能、技术栈与亮点，让访客快速了解它的价值。</p>
+          <div class="project-links"><a href="#">演示</a><a href="#">源码</a></div>
+        </div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-cover">🚀</div>
+        <div class="project-body">
+          <h3>项目名称三</h3>
+          <p>在这里简要描述项目的功能、技术栈与亮点，让访客快速了解它的价值。</p>
+          <div class="project-links"><a href="#">演示</a><a href="#">源码</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2 class="sec-title">联系方式</h2>
+    <p class="sec-sub">欢迎随时与我交流，我很乐意倾听你的想法。</p>
+    <div class="contact-wrap reveal">
+      <div class="contact-list">
+        <a class="contact-item" href="mailto:your@email.com">✉️ your@email.com</a>
+        <a class="contact-item" href="https://github.com/" target="_blank">🐙 GitHub</a>
+        <a class="contact-item" href="https://twitter.com/" target="_blank">🐦 Twitter</a>
+        <a class="contact-item" href="https://www.linkedin.com/" target="_blank">💼 LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Berrry · Built with ♥</footer>
+
+<script>
+  const bars = document.querySelectorAll('.bar-fill');
+  const revealEls = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+        entry.target.querySelectorAll('.bar-fill').forEach(b => {
+          b.style.width = b.dataset.width;
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+
+  revealEls.forEach(el => observer.observe(el));
+  bars.forEach(b => {
+    const card = b.closest('.skill-card');
+    if (card) observer.observe(card);
+  });
+</script>
+</body>
+</html>
